@@ -18,7 +18,8 @@ def process_case(page, visa_case_number):
     page.goto("https://ceac.state.gov/CEACStatTracker/Status.aspx?App=IV")
 
     page.wait_for_selector(
-        '//input[@name="ctl00$ContentPlaceHolder1$Visa_Case_Number"]'
+        '//input[@name="ctl00$ContentPlaceHolder1$Visa_Case_Number"]',
+        timeout=60000,
     )
     page.fill(
         '//input[@name="ctl00$ContentPlaceHolder1$Visa_Case_Number"]',
@@ -30,7 +31,7 @@ def process_case(page, visa_case_number):
 
         page.wait_for_selector(
             '//img[@id="c_status_ctl00_contentplaceholder1_defaultcaptcha_CaptchaImage"]',
-            timeout=5000,
+            timeout=60000,
         )
 
         image_element = page.locator(
@@ -51,7 +52,7 @@ def process_case(page, visa_case_number):
         try:
             page.wait_for_selector(
                 '//div[@class="status"]/span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatus"]',
-                timeout=5000,
+                timeout=60000,
             )
             status = page.locator(
                 '//div[@class="status"]/span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatus"]'
@@ -75,7 +76,7 @@ def process_case(page, visa_case_number):
 
                 page.wait_for_selector(
                     '//img[@id="c_status_ctl00_contentplaceholder1_defaultcaptcha_CaptchaImage"]',
-                    timeout=5000,
+                    timeout=60000,
                 )
 
     else:

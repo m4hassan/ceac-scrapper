@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: visa_captcha_solver
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8080:8080"  # Adjust if your app listens on any port
+    command: ["make", "run"]  # Runs the Makefile with the 'run' command

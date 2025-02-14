@@ -47,16 +47,3 @@ def solve_captcha(image_b64, max_wait_time=300, retry_delay=20):
     return None
 
 
-def encode_image_to_base64(image_url):
-    """Fetch an image from a URL and convert it to a Base64 string."""
-    try:
-        response = requests.get(image_url)
-        response.raise_for_status()
-        return base64.b64encode(response.content).decode("utf-8")
-    except requests.RequestException as e:
-        print(f"❌ Error fetching image: {e}")
-        return None
-
-
-def get_random_proxy():
-    return random.choice(config.PROXY_LIST)
