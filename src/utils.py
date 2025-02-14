@@ -5,7 +5,7 @@ import random
 import config as config
 
 
-def solve_captcha(image_b64, max_wait_time=300, retry_delay=20):
+def solve_captcha(image_b64, max_wait_time=120, retry_delay=20):
     payload = {
         "clientKey": config.TWO_CAPTCHA_KEY,
         "task": {
