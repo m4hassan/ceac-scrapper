@@ -2,8 +2,7 @@ import base64
 import logging
 from playwright.sync_api import sync_playwright
 from utils import solve_captcha as base_solve_captcha
-from fetch_airtable import fetch_case_numbers
-from update_airtable import update_airtable
+from airtable import fetch_case_numbers, update_airtable
 
 # Configure logging
 logging.basicConfig(
@@ -64,6 +63,10 @@ def process_case(page, visa_case_number):
             logger.info(
                 f"Case {visa_case_number} Status: {status} Updated Date: {last_update_date}"
             )
+
+            if not update_airtable(visa_case_number, status, last_update_date):
+                logger.error(f"(in process_case) - Failed to update Airtable for case {visa_case_number}")
+
             break
         except Exception:
             logger.warning(f"CAPTCHA failed for case {visa_case_number}, retrying...")
@@ -87,7 +90,7 @@ def process_case(page, visa_case_number):
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
 
         visa_case_numbers = fetch_case_numbers()
