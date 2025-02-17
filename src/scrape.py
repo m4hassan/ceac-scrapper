@@ -44,7 +44,6 @@ def process_case(page, visa_case_number):
         )
         image_data = image_element.screenshot()
         image_base64 = base64.b64encode(image_data).decode("utf-8")
-        logger.info(f"Base 64 image \n {image_base64}")
 
         captcha_solution = base_solve_captcha(image_base64)
 
@@ -99,7 +98,7 @@ def process_case(page, visa_case_number):
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             viewport={

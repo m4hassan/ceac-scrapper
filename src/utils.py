@@ -1,8 +1,17 @@
+import logging
+import sys
 import time
-import base64
+
 import requests
-import random
+
 import config as config
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
+logger = logging.getLogger()
 
 
 def solve_captcha(image_b64, max_wait_time=120, retry_delay=20):
@@ -30,20 +39,18 @@ def solve_captcha(image_b64, max_wait_time=120, retry_delay=20):
         result = requests.post(
             f"https://api.2captcha.com/getTaskResult", json=payload
         ).json()
-        print("#### CAPTCHA RESULT ####", result)
+        logger.info(f"#### CAPTCHA RESULT #### {result}")
 
         if result.get("status") == "ready":
             solved_text = result.get("solution").get("text")
-            print("✅ Captcha solved:", solved_text)
+            logger.info(f"✅ Captcha solved: {solved_text}")
             return solved_text
         elif result.get("status") == "processing":
-            print(f"⌛ Captcha not ready. Retrying in {retry_delay}s...")
+            logger.info(f"⌛ Captcha not ready. Retrying in {retry_delay}s...")
             continue
         else:
-            print("❌ Error retrieving captcha result:", result)
+            logger.error(f"❌ Error retrieving captcha result: {result}")
             return None
 
-    print("⏳ Max wait time reached. Captcha solving failed.")
+    logger.info("⏳ Max wait time reached. Captcha solving failed.")
     return None
-
-
