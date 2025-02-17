@@ -5,7 +5,6 @@ import sys
 import time
 
 from playwright.sync_api import sync_playwright
-from playwright_stealth import stealth_sync
 
 from airtable import fetch_case_numbers, update_airtable
 from utils import solve_captcha as base_solve_captcha
@@ -111,7 +110,6 @@ def main():
             permissions=["geolocation"],
         )
         page = context.new_page()
-        stealth_sync(page)
         logger.info(f"Page => {page}")
 
         visa_case_numbers = fetch_case_numbers()
