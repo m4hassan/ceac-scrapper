@@ -30,7 +30,7 @@ def process_case(page, visa_case_number, location=None, passport_number=None, su
         solve_captcha_and_submit_form(page)
 
         try:
-            extract_case_status_and_update_airtable(page, visa_case_number)
+            extract_case_status_and_update_airtable(page, visa_case_number, is_NIV)
             break  # Exit loop if successful
 
         except Exception:
@@ -40,85 +40,6 @@ def process_case(page, visa_case_number, location=None, passport_number=None, su
                 time.sleep(random.uniform(3, 5))
     else:
         logger.error(f"Failed to solve CAPTCHA for case {visa_case_number} after 3 attempts.")
-
-
-# def process_case(page, visa_case_number):
-#     page.goto("https://ceac.state.gov/CEACStatTracker/Status.aspx?App=IV")
-#     time.sleep(random.uniform(5, 7))
-#     logger.info(page)
-#
-#     page.wait_for_selector(
-#         '//input[@name="ctl00$ContentPlaceHolder1$Visa_Case_Number"]',
-#         timeout=60000,
-#     )
-#
-#     for attempt in range(3):
-#         logger.info(f"Attempt {attempt + 1} for case {visa_case_number}")
-#         page.fill(
-#             '//input[@name="ctl00$ContentPlaceHolder1$Visa_Case_Number"]',
-#             visa_case_number,
-#         )
-#
-#         page.wait_for_selector(
-#             '//img[@id="c_status_ctl00_contentplaceholder1_defaultcaptcha_CaptchaImage"]',
-#             timeout=60000,
-#         )
-#
-#         image_element = page.locator(
-#             '//img[@id="c_status_ctl00_contentplaceholder1_defaultcaptcha_CaptchaImage"]'
-#         )
-#         image_data = image_element.screenshot()
-#         image_base64 = base64.b64encode(image_data).decode("utf-8")
-#
-#         captcha_solution = base_solve_captcha(image_base64)
-#
-#         page.wait_for_selector('//input[@name="ctl00$ContentPlaceHolder1$Captcha"]')
-#         page.fill(
-#             '//input[@name="ctl00$ContentPlaceHolder1$Captcha"]', captcha_solution
-#         )
-#
-#         time.sleep(random.uniform(5, 7))
-#         page.click('//img[@id="ctl00_ContentPlaceHolder1_imgFolder" and @alt="submit"]')
-#
-#         try:
-#             page.wait_for_selector(
-#                 '//div[@class="status"]/span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatus"]',
-#                 timeout=60000,
-#             )
-#             status = page.locator(
-#                 '//div[@class="status"]/span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatus"]'
-#             ).inner_text()
-#             last_update_date = page.locator(
-#                 '//td//span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatusDate"]'
-#             ).inner_text()
-#
-#             logger.info(
-#                 f"Case {visa_case_number} Status: {status} Updated Date: {last_update_date}"
-#             )
-#
-#             if not update_airtable(visa_case_number, status, last_update_date):
-#                 logger.error(
-#                     f"(in process_case) - Failed to update Airtable for case {visa_case_number}"
-#                 )
-#
-#             break
-#         except Exception:
-#             logger.warning(f"CAPTCHA failed for case {visa_case_number}, retrying...")
-#
-#             if attempt < 2:
-#                 logger.info("Refreshing the page for a new CAPTCHA...")
-#                 page.reload(wait_until="domcontentloaded")
-#                 time.sleep(random.uniform(3, 5))
-#
-#                 page.wait_for_selector(
-#                     '//img[@id="c_status_ctl00_contentplaceholder1_defaultcaptcha_CaptchaImage"]',
-#                     timeout=60000,
-#                 )
-#
-#     else:
-#         logger.error(
-#             f"Failed to solve CAPTCHA for case {visa_case_number} after 3 attempts."
-#         )
 
 
 def main():
