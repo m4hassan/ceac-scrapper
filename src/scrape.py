@@ -9,6 +9,7 @@ from airtable import fetch_case_numbers
 from utils import (fill_case_details,
                    solve_captcha_and_submit_form,
                    extract_case_status_and_update_airtable)
+from constants import *
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,9 +21,9 @@ logger = logging.getLogger()
 
 def process_case(page, visa_case_number, location=None, passport_number=None, surname=None, is_NIV=False):
     """General function to process a case, supporting both IV and NIV cases."""
-    url = "https://ceac.state.gov/CEACStatTracker/Status.aspx?App=NIV" if is_NIV else "https://ceac.state.gov/CEACStatTracker/Status.aspx?App=IV"
+    url = NIV_url if is_NIV else IV_url
     page.goto(url)
-    time.sleep(random.uniform(5, 7))
+    time.sleep(random.uniform(3, 5))
 
     for attempt in range(3):
         logger.info(f"Attempt {attempt + 1} for case {visa_case_number}")
@@ -31,15 +32,15 @@ def process_case(page, visa_case_number, location=None, passport_number=None, su
 
         try:
             extract_case_status_and_update_airtable(page, visa_case_number, is_NIV)
-            break  # Exit loop if successful
+            break
 
-        except Exception:
-            logger.warning(f"CAPTCHA failed for case {visa_case_number}, retrying...")
+        except Exception as e:
+            logger.warning(f"Script failed to process case {visa_case_number}, retrying...\n {e}")
             if attempt < 2:
                 page.reload(wait_until="domcontentloaded")
                 time.sleep(random.uniform(3, 5))
     else:
-        logger.error(f"Failed to solve CAPTCHA for case {visa_case_number} after 3 attempts.")
+        logger.error(f"Failed to process case {visa_case_number} after 3 attempts.")
 
 
 def main():
@@ -61,7 +62,8 @@ def main():
         logger.info(visa_case_numbers)
         for visa in visa_case_numbers:
             ## TODO: Implement logic to handle both IV and NIV cases
-            process_case(page, visa, passport_number="123434355", location="KBL", surname="Hassan", is_NIV=True)
+            # process_case(page, visa, passport_number="123434355", location="KBL", surname="Hassan", is_NIV=True)
+            process_case(page, visa)
 
         browser.close()
 

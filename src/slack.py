@@ -6,7 +6,7 @@ from slack_sdk.errors import SlackApiError
 
 logger = logging.getLogger(__name__)
 
-channel = "C08APGSCFE2"
+channel = "C08DWMHED0T"
 
 class Slack:
 
@@ -15,10 +15,12 @@ class Slack:
 
     def send_message_to_channel(self, payload):
         try:
-            resp = self.client.chat_postMessage(channel=channel, blocks=payload)
+            resp = self.client.chat_postMessage(channel=channel,
+                                                text="Visa Case Number Error",
+                                                blocks=payload)
             if not resp.status_code == 200:
                 return False
-            logger.info(f"Slack message sent: {resp.text}")
+            logger.info(f"Slack message sent: {resp}")
             return True
         except SlackApiError as e:
             logger.error(f"Slack API error \n {e}")
