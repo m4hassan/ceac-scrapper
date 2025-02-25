@@ -14,3 +14,5 @@ submit_btn_xpath = '//img[@id="ctl00_ContentPlaceHolder1_imgFolder" and @alt="su
 
 visa_status_xpath = '//div[@class="status"]/span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatus"]'
 visa_last_updated_xpath = '//td//span[@id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatusDate"]'
+
+error_xpath = '//*[@id="ctl00_ContentPlaceHolder1_lblError"]'
