@@ -40,9 +40,9 @@ def solve_captcha_and_submit_form(page, max_attempts=3):
         logger.info(f"Attempt {attempt + 1} of {max_attempts} to solve CAPTCHA...")
 
         image_element = page.locator(
-            img_captcha_xpath,
-            timeout=50000
+            img_captcha_xpath
         )
+        image_element.wait_for(state="visible", timeout=50000)
         image_data = image_element.screenshot()
         image_base64 = base64.b64encode(image_data).decode("utf-8")
         captcha_solution = solve_captcha(image_base64)
@@ -74,12 +74,10 @@ def extract_case_status_and_update_airtable(page, visa_case_number, is_NIV=False
 
         status = page.locator(
             visa_status_xpath,
-            timeout=50000,
         ).inner_text()
 
         last_update_date = page.locator(
             visa_last_updated_xpath,
-            timeout=50000,
         ).inner_text()
 
         logger.info(f"Case {visa_case_number} Status: {status} Updated Date: {last_update_date}")
